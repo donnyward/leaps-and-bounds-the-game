@@ -16,8 +16,8 @@ var blocks = [[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+              [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1]];
 var playerX = 1;
 var playerY = 13;
@@ -48,6 +48,34 @@ function draw() {
     context.strokeRect(boxLength * playerX, boxLength * playerY + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
 }
 
+function leap() {
+    destX = playerX + facing;
+    /*
+     * Leap let's the player jump forward over 1 box. If an overhead box is in
+     * the way, can't leap.
+     */
+    if (blocks[playerY - 1][destX] == 1) {
+        //cant move
+    } else if (blocks[playerY][destX] == 1) {
+        //move on top
+        playerX = destX;
+        playerY--;
+    } else {
+        playerX = destX;
+        var y;
+        for (y = playerY; y < blocks.length; y++) {
+            if (blocks[y][playerX] == 1) {
+                break;
+            }
+        }
+        playerY = y - 1;
+    }
+}
+
+function bound() {
+    playerX = playerX + (2 * facing);
+}
+
 function keyDownHandler(event) {
     const leftArrow = 37;
     const rightArrow = 39;
@@ -58,9 +86,9 @@ function keyDownHandler(event) {
     } else if (event.keyCode == rightArrow) { //right arrow
         facing = 1;
     } else if (event.keyCode == dKey) {
-        playerX = playerX + facing;
+        leap();
     } else if (event.keyCode == fKey) {
-        playerX = playerX + (2 * facing);
+        bound();
     }
     draw();
 }
