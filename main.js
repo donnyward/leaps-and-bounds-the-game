@@ -12,8 +12,10 @@ var blocks = [[0, 0, 0, 1, 0, 0, 0, 1],
               [1, 1, 1, 1, 0, 0, 0, 0]];
 var playerX = 0;
 var playerY = 6;
+var facing = 1; //1 or -1 (right/left)
 
 function draw() {
+    context.clearRect(0, 0, screen.width, screen.height);
     context.strokeRect(0, 0, screen.width, screen.height);
 
     var i;
@@ -33,4 +35,29 @@ function draw() {
     context.strokeRect(boxLength * playerX, boxLength * playerY + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
 }
 
-draw()
+function keyDownHandler(event) {
+    const leftArrow = 37;
+    const rightArrow = 39;
+    const dKey = 68;
+    const fKey = 70;
+    if (event.keyCode == leftArrow) { //left arrow
+        facing = -1;
+    } else if (event.keyCode == rightArrow) { //right arrow
+        facing = 1;
+    } else if (event.keyCode == dKey) {
+        playerX = playerX + facing;
+    } else if (event.keyCode == fKey) {
+        playerX = playerX + (2 * facing);
+    }
+    draw();
+}
+
+function keyUpHandler() {
+    console.log('keyUp');
+    draw();
+}
+
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+draw();
