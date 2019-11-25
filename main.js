@@ -4,6 +4,7 @@ var context = screen.getContext('2d');
 const boxLength = 32;
 //1 = block
 //2 = goal
+//3 = player
 var blocks = [[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -17,11 +18,29 @@ var blocks = [[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-              [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+              [1, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1]];
-var playerX = 1;
-var playerY = 13;
+var player = getPlayerPos(blocks);
+//remove player start so we don't run into a phantom block there
+blocks[player.y][player.x] = 0;
+
 var facing = 1; //1 or -1 (right/left)
+
+function getPlayerPos(level) {
+    var x = 0;
+    var py = 0;
+    var i;
+    for (i = 0; i < level.length; i++) {
+        var j;
+        for (j = 0; j < level[i].length; j++) {
+            if (level[i][j] == 3) {
+                px = j;
+                py = i;
+            }
+        }
+    }
+    return { x : px, y : py };
+}
 
 function draw() {
     context.clearRect(0, 0, screen.width, screen.height);
@@ -44,8 +63,8 @@ function draw() {
     }
 
     context.fillStyle = 'lime';
-    context.fillRect(boxLength * playerX, boxLength * playerY + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
-    context.strokeRect(boxLength * playerX, boxLength * playerY + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
+    context.fillRect(boxLength * player.x, boxLength * player.y + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
+    context.strokeRect(boxLength * player.x, boxLength * player.y + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
 }
 
 /*
@@ -64,33 +83,33 @@ function fallY(x, y) {
 }
 
 function leap() {
-    destX = playerX + facing;
+    destX = player.x + facing;
     /*
      * Leap let's the player jump forward over 1 box. If an overhead box is in
      * the way, can't leap.
      */
-    if (blocks[playerY - 1][destX] == 1) {
+    if (blocks[player.y - 1][destX] == 1) {
         //cant move
-    } else if (blocks[playerY][destX] == 1) {
+    } else if (blocks[player.y][destX] == 1) {
         //move on top
-        playerX = destX;
-        playerY--;
+        player.x = destX;
+        player.y--;
     } else {
-        playerX = destX;
-        playerY = fallY(playerX, playerY);
+        player.x = destX;
+        player.y = fallY(player.x, player.y);
     }
 }
 
 function bound() {
     var i;
     for (i = 0; i < 2; i++) {
-        if (blocks[playerY][playerX + facing] == 0) {
-            playerX = playerX + facing;
+        if (blocks[player.y][player.x + facing] == 0) {
+            player.x = player.x + facing;
         } else {
             break;
         }
     }
-    playerY = fallY(playerX, playerY);
+    player.y = fallY(player.x, player.y);
 }
 
 function keyDownHandler(event) {
