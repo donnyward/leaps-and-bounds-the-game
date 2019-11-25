@@ -17,29 +17,38 @@ var blocks = [[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-              [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-              [1, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+              [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              [1, 0, 1, 3, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1]];
-var player = getPlayerPos(blocks);
+var player = getPlayerStart(blocks);
 //remove player start so we don't run into a phantom block there
 blocks[player.y][player.x] = 0;
+var goal = getGoalPos(blocks);
 
 var facing = 1; //1 or -1 (right/left)
 
-function getPlayerPos(level) {
-    var x = 0;
+function findLastPos(level, val) {
+    var px = 0;
     var py = 0;
     var i;
     for (i = 0; i < level.length; i++) {
         var j;
         for (j = 0; j < level[i].length; j++) {
-            if (level[i][j] == 3) {
+            if (level[i][j] == val) {
                 px = j;
                 py = i;
             }
         }
     }
     return { x : px, y : py };
+}
+
+function getPlayerStart(level) {
+    return findLastPos(level, 3);
+}
+
+function getGoalPos(level) {
+    return findLastPos(level, 2);
 }
 
 function draw() {
@@ -117,16 +126,24 @@ function keyDownHandler(event) {
     const rightArrow = 39;
     const dKey = 68;
     const fKey = 70;
+    var moved = false;
     if (event.keyCode == leftArrow) { //left arrow
         facing = -1;
     } else if (event.keyCode == rightArrow) { //right arrow
         facing = 1;
     } else if (event.keyCode == dKey) {
         leap();
+        moved = true;
     } else if (event.keyCode == fKey) {
         bound();
+        moved = true;
     }
     draw();
+    if (moved) {
+        if (player.x == goal.x && player.y + 1 == goal.y) {
+            alert('gg');
+        }
+    }
 }
 
 function keyUpHandler() {
