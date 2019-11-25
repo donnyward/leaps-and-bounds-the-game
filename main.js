@@ -48,6 +48,21 @@ function draw() {
     context.strokeRect(boxLength * playerX, boxLength * playerY + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
 }
 
+/*
+ * Make an object at (x, y) fall straight down until it hits the bottom of the
+ * map or lands on a nonzero block.
+ */
+function fallY(x, y) {
+    while (y < blocks.length) {
+        if (blocks[y][x] != 0) {
+            break;
+        } else {
+            y++;
+        }
+    }
+    return y - 1;
+}
+
 function leap() {
     destX = playerX + facing;
     /*
@@ -62,18 +77,20 @@ function leap() {
         playerY--;
     } else {
         playerX = destX;
-        var y;
-        for (y = playerY; y < blocks.length; y++) {
-            if (blocks[y][playerX] == 1) {
-                break;
-            }
-        }
-        playerY = y - 1;
+        playerY = fallY(playerX, playerY);
     }
 }
 
 function bound() {
-    playerX = playerX + (2 * facing);
+    var i;
+    for (i = 0; i < 2; i++) {
+        if (blocks[playerY][playerX + facing] == 0) {
+            playerX = playerX + facing;
+        } else {
+            break;
+        }
+    }
+    playerY = fallY(playerX, playerY);
 }
 
 function keyDownHandler(event) {
