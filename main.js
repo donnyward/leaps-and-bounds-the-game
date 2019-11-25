@@ -146,12 +146,5 @@ function keyDownHandler(event) {
     }
 }
 
-function keyUpHandler() {
-    console.log('keyUp');
-    draw();
-}
-
 document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
-
 draw();
