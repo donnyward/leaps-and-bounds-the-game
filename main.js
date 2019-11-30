@@ -186,12 +186,17 @@ function keyDownHandler(event) {
                 setLevel(currentLevel);
             } else {
                 alert('You win!');
+                document.removeEventListener('keydown', keyDownHandler);
+                context.clearRect(0, 0, screen.width, screen.height);
+                context.font = '30px Arial';
+                context.fillText('Thanks for playing!', 200, 200);
+                return;
             }
         }
     }
     draw();
 }
 
-setLevel(0);
+setLevel(currentLevel);
 document.addEventListener('keydown', keyDownHandler, false);
 draw();
