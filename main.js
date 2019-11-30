@@ -53,13 +53,18 @@ var levels = [[[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1],
                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]];
 var currentLevel = 0;
-var blocks = levels[currentLevel];
-var player = getPlayerStart(blocks);
-//remove player start so we don't run into a phantom block there
-blocks[player.y][player.x] = 0;
-var goal = getGoalPos(blocks);
-
+var blocks;
+var player;
+var goal;
 var facing = 1; //1 or -1 (right/left)
+
+function setLevel(newLevel) {
+    blocks = levels[newLevel];
+    player = getPlayerStart(blocks);
+    //remove player start so we don't run into a phantom block there
+    blocks[player.y][player.x] = 0;
+    goal = getGoalPos(blocks);
+}
 
 function findLastPos(level, val) {
     var px = 0;
@@ -177,10 +182,7 @@ function keyDownHandler(event) {
             alert('Congratulations!');
             currentLevel++;
             if (currentLevel < levels.length) {
-                blocks = levels[currentLevel];
-                player = getPlayerStart(blocks);
-                blocks[player.y][player.x] = 0;
-                goal = getGoalPos(blocks);
+                setLevel(currentLevel);
             } else {
                 alert('You win!');
             }
@@ -189,5 +191,6 @@ function keyDownHandler(event) {
     draw();
 }
 
+setLevel(0);
 document.addEventListener('keydown', keyDownHandler, false);
 draw();
