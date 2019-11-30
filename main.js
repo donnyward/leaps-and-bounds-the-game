@@ -64,6 +64,7 @@ function setLevel(newLevel) {
     //remove player start so we don't run into a phantom block there
     blocks[player.y][player.x] = 0;
     goal = getGoalPos(blocks);
+    document.getElementById("levelHeader").innerHTML = 'Level ' + (newLevel + 1) + ' / ' + levels.length;
 }
 
 function findLastPos(level, val) {
