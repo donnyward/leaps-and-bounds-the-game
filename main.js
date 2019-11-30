@@ -52,7 +52,8 @@ var levels = [[[1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
                [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1],
                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]];
-var blocks = levels[0];
+var currentLevel = 0;
+var blocks = levels[currentLevel];
 var player = getPlayerStart(blocks);
 //remove player start so we don't run into a phantom block there
 blocks[player.y][player.x] = 0;
@@ -171,12 +172,21 @@ function keyDownHandler(event) {
         bound();
         moved = true;
     }
-    draw();
     if (moved) {
         if (player.x == goal.x && player.y + 1 == goal.y) {
-            alert('gg');
+            alert('Congratulations!');
+            currentLevel++;
+            if (currentLevel < levels.length) {
+                blocks = levels[currentLevel];
+                player = getPlayerStart(blocks);
+                blocks[player.y][player.x] = 0;
+                goal = getGoalPos(blocks);
+            } else {
+                alert('You win!');
+            }
         }
     }
+    draw();
 }
 
 document.addEventListener('keydown', keyDownHandler, false);
