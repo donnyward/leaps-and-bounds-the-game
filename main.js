@@ -96,17 +96,18 @@ function draw() {
     context.strokeRect(0, 0, screen.width, screen.height);
 
     var i;
+    const screenOffset = screen.height - (boxLength * blocks.length);
     for (i = 0; i < blocks.length; i++) {
         var j;
         for (j = 0; j < blocks[i].length; j++) {
             if (blocks[i][j] == 1) {
                 context.fillStyle = 'grey';
-                context.fillRect(boxLength * j, boxLength * i + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
-                context.strokeRect(boxLength * j, boxLength * i + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
+                context.fillRect(boxLength * j, boxLength * i + screenOffset, boxLength, boxLength);
+                context.strokeRect(boxLength * j, boxLength * i + screenOffset, boxLength, boxLength);
             } else if (blocks[i][j] == 2) {
                 context.fillStyle = 'orange';
                 context.beginPath();
-                context.arc((boxLength * j) + (boxLength / 2), boxLength * i + (screen.height - (boxLength * blocks.length)) + (boxLength / 2), boxLength / 2, 0, 2 * Math.PI);
+                context.arc((boxLength * j) + (boxLength / 2), boxLength * i + screenOffset + (boxLength / 2), boxLength / 2, 0, 2 * Math.PI);
                 context.fill();
                 context.stroke();
             }
@@ -114,8 +115,18 @@ function draw() {
     }
 
     context.fillStyle = 'lime';
-    context.fillRect(boxLength * player.x, boxLength * player.y + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
-    context.strokeRect(boxLength * player.x, boxLength * player.y + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
+    context.beginPath();
+    context.moveTo((boxLength * player.x) + (boxLength / 2),
+            boxLength * player.y + screenOffset);
+    context.lineTo((boxLength * player.x) + boxLength,
+            boxLength * player.y + screenOffset + (boxLength / 2));
+    context.lineTo((boxLength * player.x) + (boxLength / 2),
+            boxLength * player.y + screenOffset + boxLength);
+    context.lineTo((boxLength * player.x),
+            boxLength * player.y + screenOffset + (boxLength / 2));
+    context.closePath();
+    context.fill();
+    context.stroke();
 }
 
 /*
