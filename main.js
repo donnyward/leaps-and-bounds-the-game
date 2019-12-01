@@ -108,6 +108,7 @@ function draw() {
                 context.fillStyle = 'orange';
                 context.beginPath();
                 context.arc((boxLength * j) + (boxLength / 2), boxLength * i + screenOffset + (boxLength / 2), boxLength / 2, 0, 2 * Math.PI);
+                context.closePath();
                 context.fill();
                 context.stroke();
             }
