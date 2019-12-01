@@ -105,8 +105,10 @@ function draw() {
                 context.strokeRect(boxLength * j, boxLength * i + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
             } else if (blocks[i][j] == 2) {
                 context.fillStyle = 'orange';
-                context.fillRect(boxLength * j, boxLength * i + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
-                context.strokeRect(boxLength * j, boxLength * i + (screen.height - (boxLength * blocks.length)), boxLength, boxLength);
+                context.beginPath();
+                context.arc((boxLength * j) + (boxLength / 2), boxLength * i + (screen.height - (boxLength * blocks.length)) + (boxLength / 2), boxLength / 2, 0, 2 * Math.PI);
+                context.fill();
+                context.stroke();
             }
         }
     }
